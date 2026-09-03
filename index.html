@@ -29,10 +29,11 @@
         .bg-glow {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
+            filter: blur(55px);
+            opacity: 0.28;
             z-index: 0;
             pointer-events: none;
+            transform: translateZ(0);
         }
         .bg1 { width: 400px; height: 400px; background: #ff2a6d; top: -150px; left: -150px; }
         .bg2 { width: 400px; height: 400px; background: #7c3aed; bottom: -150px; right: -150px; }
@@ -80,8 +81,8 @@
             right: 20px;
             z-index: 99999;
             background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 40px;
             padding: 10px 18px;
@@ -129,12 +130,14 @@
             padding: 28px 20px;
             opacity: 0;
             transform: scale(0.9) translateY(30px);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
             pointer-events: none;
             z-index: 1;
             border: 1px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
-            will-change: transform, opacity;
+            contain: layout paint;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         .page.active {
@@ -267,8 +270,8 @@
 
         .final-page {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px) saturate(200%);
-            -webkit-backdrop-filter: blur(16px) saturate(200%);
+            backdrop-filter: blur(10px) saturate(140%);
+            -webkit-backdrop-filter: blur(10px) saturate(140%);
         }
 
         .final-page p {
@@ -328,6 +331,47 @@
             .btn { font-size: 0.85rem; padding: 10px 20px; }
             .final-page h1 { font-size: 1.6rem; }
         }
+
+        /* ===== MOBILE PERFORMANCE FALLBACK ===== */
+        @media (max-width: 550px) {
+            .bg-glow {
+                filter: blur(35px);
+                opacity: 0.22;
+            }
+
+            .page,
+            .final-page {
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+            }
+
+            .page {
+                box-shadow:
+                    0 12px 35px rgba(0, 0, 0, 0.32),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            }
+
+            .page.active {
+                box-shadow:
+                    0 15px 40px rgba(0, 0, 0, 0.34),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+            }
+
+            .star,
+            .particle-float {
+                animation-duration: 24s;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .page,
+            .star,
+            .particle-float,
+            .final-page h1 {
+                animation: none !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -344,7 +388,7 @@
     </div>
 
     <!-- Audio - optimized for mobile -->
-    <audio id="bg-audio" loop preload="metadata">
+    <audio id="bg-audio" loop preload="none">
         <source src="https://l.top4top.io/m_3898100kl1.mp3" type="audio/mpeg">
     </audio>
 
@@ -458,20 +502,33 @@
         }
 
         // ===== PAGE TRANSITION =====
-        function nextPage(current, next) {
-            const currentPage = document.getElementById('page-' + current);
-            const nextPage = document.getElementById('page-' + next);
+        let isTransitioning = false;
 
+        function nextPage(current, next) {
+            if (isTransitioning) return;
+
+            const currentPage = document.getElementById('page-' + current);
+            const nextPageEl = document.getElementById('page-' + next);
+
+            if (!currentPage || !nextPageEl || current === next) return;
+
+            isTransitioning = true;
+
+            // Put the next page on the compositor immediately, then swap
+            // opacity/transform without introducing a visible 300ms gap.
+            nextPageEl.classList.add('active');
             currentPage.classList.remove('active');
-            setTimeout(() => {
-                nextPage.classList.add('active');
-            }, 300);
 
             if (next === 8) {
-                setTimeout(() => {
-                    launchConfettiBurst();
-                }, 500);
+                // Let the browser paint the final page before starting canvas work.
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => launchConfettiBurst());
+                });
             }
+
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 340);
         }
 
         // ===== OPTIMIZED CONFETTI for mobile =====
@@ -534,8 +591,12 @@
                 ctx.rotate((this.rotation * Math.PI) / 180);
                 ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = isLowEnd ? 6 : 12;
+                // Shadows on hundreds of canvas particles are expensive on
+                // mobile GPUs, so only use a tiny blur on stronger devices.
+                if (!isLowEnd) {
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 3;
+                }
 
                 if (this.shape === 'rect') {
                     const w = this.size;
@@ -550,7 +611,7 @@
             }
         }
 
-        function initConfetti(count = isLowEnd ? 120 : 200) {
+        function initConfetti(count = isLowEnd ? 70 : 120) {
             particles = [];
             for (let i = 0; i < count; i++) {
                 particles.push(new Particle());
@@ -569,7 +630,7 @@
 
         function launchConfettiBurst() {
             if (confettiActive) {
-                const addCount = isLowEnd ? 40 : 80;
+                const addCount = isLowEnd ? 20 : 40;
                 for (let i = 0; i < addCount; i++) {
                     particles.push(new Particle());
                 }
@@ -577,7 +638,7 @@
             }
             confettiActive = true;
             document.body.classList.add('confetti-active');
-            initConfetti(isLowEnd ? 130 : 220);
+            initConfetti(isLowEnd ? 80 : 130);
             animateConfetti();
             
             // Auto stop after 8 seconds to save battery
@@ -591,7 +652,7 @@
                     }
                     ctx.clearRect(0, 0, width, height);
                 }
-            }, 8000);
+            }, 6000);
         }
     </script>
 </body>
