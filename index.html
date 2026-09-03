@@ -25,7 +25,6 @@
             touch-action: manipulation;
         }
 
-        /* Simple static background - better performance */
         .bg-glow {
             position: absolute;
             border-radius: 50%;
@@ -39,7 +38,6 @@
         .bg2 { width: 400px; height: 400px; background: #7c3aed; bottom: -150px; right: -150px; }
         .bg3 { width: 250px; height: 250px; background: #f59e0b; top: 50%; left: 70%; }
 
-        /* Simple star particles - minimal */
         .stars {
             position: absolute;
             width: 100%;
@@ -74,7 +72,6 @@
             perspective: 1200px;
         }
 
-        /* Music Control - mobile friendly */
         .music-control {
             position: fixed;
             bottom: 20px;
@@ -150,7 +147,6 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
-        /* Simplified border glow - only for active */
         .page.active::before {
             content: '';
             position: absolute;
@@ -279,7 +275,6 @@
             font-size: 1.2rem;
         }
 
-        /* Simplified floating particles - fewer */
         .particle-float {
             position: absolute;
             font-size: 1.5rem;
@@ -332,42 +327,28 @@
             .final-page h1 { font-size: 1.6rem; }
         }
 
-        /* ===== MOBILE PERFORMANCE FALLBACK ===== */
         @media (max-width: 550px) {
             .bg-glow {
                 filter: blur(35px);
                 opacity: 0.22;
             }
-
-            .page,
-            .final-page {
+            .page, .final-page {
                 backdrop-filter: blur(5px);
                 -webkit-backdrop-filter: blur(5px);
             }
-
             .page {
-                box-shadow:
-                    0 12px 35px rgba(0, 0, 0, 0.32),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             }
-
             .page.active {
-                box-shadow:
-                    0 15px 40px rgba(0, 0, 0, 0.34),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.10);
             }
-
-            .star,
-            .particle-float {
+            .star, .particle-float {
                 animation-duration: 24s;
             }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .page,
-            .star,
-            .particle-float,
-            .final-page h1 {
+            .page, .star, .particle-float, .final-page h1 {
                 animation: none !important;
                 transition-duration: 0.01ms !important;
             }
@@ -375,7 +356,7 @@
     </style>
 </head>
 <body>
-    <!-- Simple static background -->
+    <!-- Background -->
     <div class="bg-glow bg1"></div>
     <div class="bg-glow bg2"></div>
     <div class="bg-glow bg3"></div>
@@ -387,11 +368,12 @@
         <div class="star">✦</div>
     </div>
 
-    <!-- Audio - optimized for mobile -->
-    <audio id="bg-audio" loop preload="none">
+    <!-- Audio with autoplay -->
+    <audio id="bg-audio" loop autoplay>
         <source src="https://l.top4top.io/m_3898100kl1.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Music Control -->
     <div class="music-control" id="musicControl" onclick="toggleMusic()">
         <i class="fas fa-music" id="musicIcon"></i>
         <span class="status" id="musicStatus">Playing</span>
@@ -458,31 +440,28 @@
     </div>
 
     <script>
-        // ===== AUDIO =====
+        // ===== AUDIO AUTOPLAY FIX =====
         const audio = document.getElementById('bg-audio');
         let musicPlaying = true;
-        let audioStarted = false;
 
-        function initAudio() {
-            if (audioStarted) return;
-            audio.play().then(() => {
-                audioStarted = true;
-            }).catch(() => {
-                // Auto-play blocked - wait for user interaction
-                const startAudio = () => {
-                    audio.play().then(() => {
-                        audioStarted = true;
-                    }).catch(() => {});
-                    document.removeEventListener('click', startAudio);
-                    document.removeEventListener('touchstart', startAudio);
+        // Force autoplay on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            audio.play().catch(function(error) {
+                // If autoplay blocked, play on first user interaction
+                const playOnInteraction = function() {
+                    audio.play().catch(function() {});
+                    document.removeEventListener('click', playOnInteraction);
+                    document.removeEventListener('touchstart', playOnInteraction);
                 };
-                document.addEventListener('click', startAudio);
-                document.addEventListener('touchstart', startAudio);
+                document.addEventListener('click', playOnInteraction);
+                document.addEventListener('touchstart', playOnInteraction);
             });
-        }
+        });
 
-        // Try to start audio on load
-        setTimeout(initAudio, 500);
+        // Also try to play immediately (for browsers that support it)
+        setTimeout(function() {
+            audio.play().catch(function() {});
+        }, 100);
 
         function toggleMusic() {
             const icon = document.getElementById('musicIcon');
@@ -494,7 +473,7 @@
                 status.textContent = 'Paused';
                 musicPlaying = false;
             } else {
-                audio.play().catch(() => {});
+                audio.play().catch(function() {});
                 icon.className = 'fas fa-music';
                 status.textContent = 'Playing';
                 musicPlaying = true;
@@ -514,24 +493,23 @@
 
             isTransitioning = true;
 
-            // Put the next page on the compositor immediately, then swap
-            // opacity/transform without introducing a visible 300ms gap.
             nextPageEl.classList.add('active');
             currentPage.classList.remove('active');
 
             if (next === 8) {
-                // Let the browser paint the final page before starting canvas work.
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => launchConfettiBurst());
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        launchConfettiBurst();
+                    });
                 });
             }
 
-            setTimeout(() => {
+            setTimeout(function() {
                 isTransitioning = false;
             }, 340);
         }
 
-        // ===== OPTIMIZED CONFETTI for mobile =====
+        // ===== CONFETTI =====
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -540,7 +518,6 @@
         let animationFrame = null;
         let isLowEnd = false;
 
-        // Detect low-end devices
         if (window.navigator.hardwareConcurrency && window.navigator.hardwareConcurrency < 4) {
             isLowEnd = true;
         }
@@ -566,7 +543,7 @@
                 this.speedX = (Math.random() - 0.5) * (isLowEnd ? 3 : 5);
                 this.rotation = Math.random() * 360;
                 this.rotateSpeed = (Math.random() - 0.5) * (isLowEnd ? 6 : 10);
-                this.color = `hsl(${Math.random() * 360}, 90%, 60%)`;
+                this.color = 'hsl(' + (Math.random() * 360) + ', 90%, 60%)';
                 this.opacity = 0.7 + Math.random() * 0.3;
                 this.shape = Math.random() > 0.5 ? 'rect' : 'circle';
                 this.wobble = Math.random() * 10;
@@ -591,16 +568,14 @@
                 ctx.rotate((this.rotation * Math.PI) / 180);
                 ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
-                // Shadows on hundreds of canvas particles are expensive on
-                // mobile GPUs, so only use a tiny blur on stronger devices.
                 if (!isLowEnd) {
                     ctx.shadowColor = this.color;
                     ctx.shadowBlur = 3;
                 }
 
                 if (this.shape === 'rect') {
-                    const w = this.size;
-                    const h = this.size * 0.5;
+                    var w = this.size;
+                    var h = this.size * 0.5;
                     ctx.fillRect(-w/2, -h/2, w, h);
                 } else {
                     ctx.beginPath();
@@ -611,9 +586,10 @@
             }
         }
 
-        function initConfetti(count = isLowEnd ? 70 : 120) {
+        function initConfetti(count) {
+            count = count || (isLowEnd ? 70 : 120);
             particles = [];
-            for (let i = 0; i < count; i++) {
+            for (var i = 0; i < count; i++) {
                 particles.push(new Particle());
             }
         }
@@ -621,17 +597,17 @@
         function animateConfetti() {
             if (!confettiActive) return;
             ctx.clearRect(0, 0, width, height);
-            for (let p of particles) {
-                p.update();
-                p.draw();
+            for (var i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
             }
             animationFrame = requestAnimationFrame(animateConfetti);
         }
 
         function launchConfettiBurst() {
             if (confettiActive) {
-                const addCount = isLowEnd ? 20 : 40;
-                for (let i = 0; i < addCount; i++) {
+                var addCount = isLowEnd ? 20 : 40;
+                for (var i = 0; i < addCount; i++) {
                     particles.push(new Particle());
                 }
                 return;
@@ -641,8 +617,7 @@
             initConfetti(isLowEnd ? 80 : 130);
             animateConfetti();
             
-            // Auto stop after 8 seconds to save battery
-            setTimeout(() => {
+            setTimeout(function() {
                 if (confettiActive) {
                     confettiActive = false;
                     document.body.classList.remove('confetti-active');
