@@ -69,7 +69,6 @@
             height: 480px;
             position: relative;
             z-index: 10;
-            perspective: 1200px;
         }
 
         .music-control {
@@ -231,7 +230,6 @@
             }
         }
 
-        /* Extra shine for active page */
         .page.active .sparkle-particle {
             animation-play-state: running;
         }
@@ -501,8 +499,8 @@
                 <div class="sparkle-particle pink small"></div>
             </div>
             <div class="particle-float">✨</div>
-            <h1>Hey Angel... ✨</h1>
-            <p>Ajke ekta onek special din. Jano ki ajke ki?</p>
+            <h1>Hey My Little Angel... ✨</h1>
+            <p>Ajke ekta onek special din. Janish ki ajke ki?</p>
             <button class="btn" onclick="nextPage(1, 2)">Click Here <i class="fas fa-arrow-right"></i></button>
         </div>
 
@@ -561,8 +559,8 @@
                 <div class="sparkle-particle pink small"></div>
             </div>
             <div class="particle-float">🤫</div>
-            <h1>Tobe Ekta Kotha... 🤫</h1>
-            <p>Tui jotoi boro hosh na keno, amar kache tui obossoi choto bon-i thakbi sarakkhon.</p>
+            <h1>Tobe Ekta Kotha... </h1>
+            <p>Tui jotoi boro hosh na keno, amar kache tui obossoi chotto buri thakbi sarakkhon.</p>
             <button class="btn" onclick="nextPage(3, 4)">Next <i class="fas fa-arrow-right"></i></button>
         </div>
 
@@ -591,7 +589,7 @@
                 <div class="sparkle-particle pink small"></div>
             </div>
             <div class="particle-float">🤲</div>
-            <h1>Amar Doya... 🤲</h1>
+            <h1>Blessings... 🤲</h1>
             <p>Allah tor jiboner sob bhalo iccha gulo puron koruk. Tui jeno sobshomoy emon hashi-khushi thakis.</p>
             <button class="btn" onclick="nextPage(4, 5)">Next <i class="fas fa-arrow-right"></i></button>
         </div>
@@ -678,4 +676,251 @@
                 <div class="sparkle-particle pink small"></div>
                 <div class="sparkle-particle gold medium"></div>
                 <div class="sparkle-particle purple large"></div>
-                <div class="
+                <div class="sparkle-particle pink small"></div>
+            </div>
+            <div class="particle-float">⏳</div>
+            <h1>Countdown... ⏳</h1>
+            <p>3... 2... 1...</p>
+            <button class="btn" onclick="nextPage(7, 8)">Boom! <i class="fas fa-star"></i></button>
+        </div>
+
+        <!-- Page 8 - Final -->
+        <div class="page final-page" id="page-8">
+            <div class="sparkle-container">
+                <div class="sparkle-particle gold medium"></div>
+                <div class="sparkle-particle pink small"></div>
+                <div class="sparkle-particle gold large"></div>
+                <div class="sparkle-particle purple medium"></div>
+                <div class="sparkle-particle pink small"></div>
+                <div class="sparkle-particle gold medium"></div>
+                <div class="sparkle-particle purple large"></div>
+                <div class="sparkle-particle pink medium"></div>
+                <div class="sparkle-particle gold small"></div>
+                <div class="sparkle-particle purple small"></div>
+                <div class="sparkle-particle pink medium"></div>
+                <div class="sparkle-particle gold medium"></div>
+                <div class="sparkle-particle purple small"></div>
+                <div class="sparkle-particle pink large"></div>
+                <div class="sparkle-particle gold small"></div>
+                <div class="sparkle-particle purple medium"></div>
+                <div class="sparkle-particle pink small"></div>
+                <div class="sparkle-particle gold medium"></div>
+                <div class="sparkle-particle purple large"></div>
+                <div class="sparkle-particle pink small"></div>
+            </div>
+            <div class="particle-float">🎉</div>
+            <h1>🎉 HAPPY BIRTHDAY MY DEAR LITTLE ANGEL! 🎉</h1>
+            <p>Onek onek bhalobasha ar  tor jonno! Have a blast today! 🎂🎁💖</p>
+            <button class="btn" onclick="location.reload()"><i class="fas fa-redo-alt"></i> Replay</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUDIO AUTOPLAY =====
+        const audio = document.getElementById('bg-audio');
+        let musicPlaying = true;
+        let audioStarted = false;
+
+        function playAudio() {
+            if (audioStarted) return;
+            audio.play().then(function() {
+                audioStarted = true;
+                document.getElementById('musicIcon').className = 'fas fa-music';
+                document.getElementById('musicStatus').textContent = 'Playing';
+            }).catch(function(e) {
+                console.log('Audio play failed:', e);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('audio-trigger').click();
+        });
+
+        setTimeout(function() {
+            if (!audioStarted) {
+                audio.play().then(function() {
+                    audioStarted = true;
+                }).catch(function() {});
+            }
+        }, 100);
+
+        function playOnInteraction() {
+            if (!audioStarted) {
+                audio.play().then(function() {
+                    audioStarted = true;
+                    document.getElementById('musicIcon').className = 'fas fa-music';
+                    document.getElementById('musicStatus').textContent = 'Playing';
+                }).catch(function() {});
+            }
+        }
+        document.addEventListener('click', playOnInteraction);
+        document.addEventListener('touchstart', playOnInteraction);
+
+        function toggleMusic() {
+            const icon = document.getElementById('musicIcon');
+            const status = document.getElementById('musicStatus');
+            
+            if (musicPlaying) {
+                audio.pause();
+                icon.className = 'fas fa-music fa-volume-mute';
+                status.textContent = 'Paused';
+                musicPlaying = false;
+            } else {
+                audio.play().catch(function() {});
+                icon.className = 'fas fa-music';
+                status.textContent = 'Playing';
+                musicPlaying = true;
+            }
+        }
+
+        // ===== PAGE TRANSITION =====
+        let isTransitioning = false;
+
+        function nextPage(current, next) {
+            if (isTransitioning) return;
+
+            var currentPage = document.getElementById('page-' + current);
+            var nextPageEl = document.getElementById('page-' + next);
+
+            if (!currentPage || !nextPageEl || current === next) return;
+
+            isTransitioning = true;
+
+            // Remove active from current, add to next
+            currentPage.classList.remove('active');
+            nextPageEl.classList.add('active');
+
+            if (next === 8) {
+                setTimeout(function() {
+                    launchConfettiBurst();
+                }, 400);
+            }
+
+            setTimeout(function() {
+                isTransitioning = false;
+            }, 400);
+        }
+
+        // ===== CONFETTI =====
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let confettiActive = false;
+        let animationFrame = null;
+        let isLowEnd = false;
+
+        if (window.navigator.hardwareConcurrency && window.navigator.hardwareConcurrency < 4) {
+            isLowEnd = true;
+        }
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height - height * 0.1;
+                this.size = isLowEnd ? Math.random() * 8 + 4 : Math.random() * 12 + 5;
+                this.speedY = isLowEnd ? Math.random() * 5 + 3 : Math.random() * 7 + 4;
+                this.speedX = (Math.random() - 0.5) * (isLowEnd ? 3 : 5);
+                this.rotation = Math.random() * 360;
+                this.rotateSpeed = (Math.random() - 0.5) * (isLowEnd ? 6 : 10);
+                this.color = 'hsl(' + (Math.random() * 360) + ', 90%, 60%)';
+                this.opacity = 0.7 + Math.random() * 0.3;
+                this.shape = Math.random() > 0.5 ? 'rect' : 'circle';
+                this.wobble = Math.random() * 10;
+                this.wobbleSpeed = Math.random() * 0.08 + 0.02;
+                this.wobbleOffset = Math.random() * 100;
+            }
+            update() {
+                this.y += this.speedY * 0.7;
+                this.x += this.speedX + Math.sin(this.wobbleOffset + this.wobble) * 0.4;
+                this.rotation += this.rotateSpeed;
+                this.wobble += this.wobbleSpeed;
+                if (this.y > height + 40) {
+                    this.reset();
+                    this.y = -10;
+                }
+                if (this.x > width + 40) this.x = -20;
+                if (this.x < -40) this.x = width + 20;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                if (!isLowEnd) {
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 3;
+                }
+
+                if (this.shape === 'rect') {
+                    var w = this.size;
+                    var h = this.size * 0.5;
+                    ctx.fillRect(-w/2, -h/2, w, h);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size/2.2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        function initConfetti(count) {
+            count = count || (isLowEnd ? 70 : 120);
+            particles = [];
+            for (var i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateConfetti() {
+            if (!confettiActive) return;
+            ctx.clearRect(0, 0, width, height);
+            for (var i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            animationFrame = requestAnimationFrame(animateConfetti);
+        }
+
+        function launchConfettiBurst() {
+            if (confettiActive) {
+                var addCount = isLowEnd ? 20 : 40;
+                for (var i = 0; i < addCount; i++) {
+                    particles.push(new Particle());
+                }
+                return;
+            }
+            confettiActive = true;
+            document.body.classList.add('confetti-active');
+            initConfetti(isLowEnd ? 80 : 130);
+            animateConfetti();
+            
+            setTimeout(function() {
+                if (confettiActive) {
+                    confettiActive = false;
+                    document.body.classList.remove('confetti-active');
+                    if (animationFrame) {
+                        cancelAnimationFrame(animationFrame);
+                        animationFrame = null;
+                    }
+                    ctx.clearRect(0, 0, width, height);
+                }
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
