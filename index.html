@@ -307,6 +307,15 @@
             display: block;
         }
 
+        /* Hidden audio trigger */
+        #audio-trigger {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         @media (max-width: 550px) {
             .container { height: 520px; }
             h1 { font-size: 1.7rem; }
@@ -368,10 +377,13 @@
         <div class="star">✦</div>
     </div>
 
-    <!-- Audio with autoplay -->
-    <audio id="bg-audio" loop autoplay>
+    <!-- Audio with autoplay - using multiple approaches -->
+    <audio id="bg-audio" loop>
         <source src="https://l.top4top.io/m_3898100kl1.mp3" type="audio/mpeg">
     </audio>
+
+    <!-- Hidden trigger button that auto-clicks on load -->
+    <button id="audio-trigger" onclick="playAudio()">Play</button>
 
     <!-- Music Control -->
     <div class="music-control" id="musicControl" onclick="toggleMusic()">
@@ -440,28 +452,57 @@
     </div>
 
     <script>
-        // ===== AUDIO AUTOPLAY FIX =====
+        // ===== AUDIO AUTOPLAY - TRIPLE FALLBACK =====
         const audio = document.getElementById('bg-audio');
         let musicPlaying = true;
+        let audioStarted = false;
 
-        // Force autoplay on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            audio.play().catch(function(error) {
-                // If autoplay blocked, play on first user interaction
-                const playOnInteraction = function() {
-                    audio.play().catch(function() {});
-                    document.removeEventListener('click', playOnInteraction);
-                    document.removeEventListener('touchstart', playOnInteraction);
-                };
-                document.addEventListener('click', playOnInteraction);
-                document.addEventListener('touchstart', playOnInteraction);
+        function playAudio() {
+            if (audioStarted) return;
+            audio.play().then(function() {
+                audioStarted = true;
+                document.getElementById('musicIcon').className = 'fas fa-music';
+                document.getElementById('musicStatus').textContent = 'Playing';
+            }).catch(function(e) {
+                console.log('Audio play failed:', e);
             });
+        }
+
+        // Method 1: Auto-click the hidden button on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('audio-trigger').click();
         });
 
-        // Also try to play immediately (for browsers that support it)
+        // Method 2: Try to play directly
         setTimeout(function() {
-            audio.play().catch(function() {});
+            if (!audioStarted) {
+                audio.play().then(function() {
+                    audioStarted = true;
+                }).catch(function() {});
+            }
         }, 100);
+
+        // Method 3: Play on any user interaction (click/touch)
+        function playOnInteraction() {
+            if (!audioStarted) {
+                audio.play().then(function() {
+                    audioStarted = true;
+                    document.getElementById('musicIcon').className = 'fas fa-music';
+                    document.getElementById('musicStatus').textContent = 'Playing';
+                }).catch(function() {});
+            }
+        }
+        document.addEventListener('click', playOnInteraction);
+        document.addEventListener('touchstart', playOnInteraction);
+
+        // Method 4: Also try on page visibility change (when user comes back to tab)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && !audioStarted) {
+                audio.play().then(function() {
+                    audioStarted = true;
+                }).catch(function() {});
+            }
+        });
 
         function toggleMusic() {
             const icon = document.getElementById('musicIcon');
