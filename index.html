@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy Birthday Angel! ✨</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -21,27 +22,23 @@
             background: radial-gradient(circle at 30% 20%, #1a0b1f, #0d0a1a, #1a0b1f);
             overflow: hidden;
             position: relative;
+            touch-action: manipulation;
         }
 
+        /* Simple static background - better performance */
         .bg-glow {
             position: absolute;
             border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.5;
+            filter: blur(80px);
+            opacity: 0.4;
             z-index: 0;
             pointer-events: none;
-            animation: bgFloat 15s infinite alternate ease-in-out;
         }
-        .bg1 { width: 600px; height: 600px; background: #ff2a6d; top: -200px; left: -200px; animation-delay: 0s; }
-        .bg2 { width: 550px; height: 550px; background: #7c3aed; bottom: -200px; right: -200px; animation-delay: 5s; }
-        .bg3 { width: 400px; height: 400px; background: #f59e0b; top: 50%; left: 60%; animation-delay: 10s; }
-        .bg4 { width: 300px; height: 300px; background: #ec4899; top: 10%; right: 10%; animation-delay: 3s; }
+        .bg1 { width: 400px; height: 400px; background: #ff2a6d; top: -150px; left: -150px; }
+        .bg2 { width: 400px; height: 400px; background: #7c3aed; bottom: -150px; right: -150px; }
+        .bg3 { width: 250px; height: 250px; background: #f59e0b; top: 50%; left: 70%; }
 
-        @keyframes bgFloat {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(60px, -50px) scale(1.2); }
-        }
-
+        /* Simple star particles - minimal */
         .stars {
             position: absolute;
             width: 100%;
@@ -52,65 +49,63 @@
         }
         .star {
             position: absolute;
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.08);
+            font-size: 1.2rem;
             animation: starFloat 20s infinite linear;
         }
-        .star:nth-child(1) { top: 10%; left: 5%; animation-duration: 22s; }
-        .star:nth-child(2) { top: 85%; left: 92%; animation-duration: 18s; }
-        .star:nth-child(3) { top: 45%; left: 95%; animation-duration: 25s; font-size: 2.5rem; }
-        .star:nth-child(4) { top: 70%; left: 3%; animation-duration: 20s; }
-        .star:nth-child(5) { top: 25%; left: 88%; animation-duration: 23s; font-size: 1.2rem; }
-        .star:nth-child(6) { top: 55%; left: 8%; animation-duration: 19s; font-size: 2.2rem; }
+        .star:nth-child(1) { top: 10%; left: 5%; animation-duration: 25s; }
+        .star:nth-child(2) { top: 80%; left: 90%; animation-duration: 20s; }
+        .star:nth-child(3) { top: 40%; left: 92%; animation-duration: 30s; font-size: 1.8rem; }
+        .star:nth-child(4) { top: 65%; left: 3%; animation-duration: 22s; }
 
         @keyframes starFloat {
-            0% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
-            50% { opacity: 0.3; }
-            100% { transform: translateY(-80px) rotate(360deg); opacity: 0.1; }
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.05; }
+            50% { opacity: 0.15; }
+            100% { transform: translateY(-60px) rotate(360deg); opacity: 0.05; }
         }
 
         .container {
-            width: 92%;
-            max-width: 750px;
-            height: 520px;
+            width: 94%;
+            max-width: 700px;
+            height: 480px;
             position: relative;
             z-index: 10;
-            perspective: 1600px;
+            perspective: 1200px;
         }
 
-        /* Music Control Button */
+        /* Music Control - mobile friendly */
         .music-control {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             z-index: 99999;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 10px 18px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
             color: white;
             cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             user-select: none;
+            touch-action: manipulation;
         }
-        .music-control:hover {
-            transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+        .music-control:active {
+            transform: scale(0.92);
         }
         .music-control i {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: #ff6b9d;
         }
         .music-control .status {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
 
         .page {
@@ -119,137 +114,98 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(20px) saturate(200%);
-            -webkit-backdrop-filter: blur(20px) saturate(200%);
-            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-radius: 40px;
             box-shadow: 
-                0 30px 80px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 38px 32px;
+            padding: 28px 20px;
             opacity: 0;
-            transform: scale(0.85) translateY(50px) rotateY(-15deg) rotateX(8deg);
-            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             z-index: 1;
-            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
-        }
-
-        .page::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 62px;
-            padding: 2px;
-            background: conic-gradient(from 0deg, transparent, rgba(255, 42, 109, 0.3), transparent, rgba(124, 58, 237, 0.3), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        .page.active::before {
-            opacity: 1;
-            animation: borderRotate 4s linear infinite;
-        }
-
-        @keyframes borderRotate {
-            0% { background: conic-gradient(from 0deg, transparent, rgba(255, 42, 109, 0.4), transparent, rgba(124, 58, 237, 0.4), transparent); }
-            50% { background: conic-gradient(from 180deg, transparent, rgba(124, 58, 237, 0.4), transparent, rgba(255, 42, 109, 0.4), transparent); }
-            100% { background: conic-gradient(from 360deg, transparent, rgba(255, 42, 109, 0.4), transparent, rgba(124, 58, 237, 0.4), transparent); }
+            will-change: transform, opacity;
         }
 
         .page.active {
             opacity: 1;
-            transform: scale(1) translateY(0) rotateY(0deg) rotateX(0deg);
+            transform: scale(1) translateY(0);
             pointer-events: auto;
             z-index: 20;
             box-shadow: 
-                0 40px 100px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                0 0 60px rgba(255, 42, 109, 0.05);
+                0 25px 70px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
-        .page::after {
+        /* Simplified border glow - only for active */
+        .page.active::before {
             content: '';
             position: absolute;
-            inset: 0;
-            border-radius: 60px;
-            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.05), transparent 70%);
+            inset: -1px;
+            border-radius: 41px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.2), rgba(124, 58, 237, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             pointer-events: none;
         }
 
-        #page-1 { border-color: rgba(255, 42, 109, 0.2); }
-        #page-2 { border-color: rgba(245, 158, 11, 0.2); }
-        #page-3 { border-color: rgba(124, 58, 237, 0.2); }
-        #page-4 { border-color: rgba(16, 185, 129, 0.2); }
-        #page-5 { border-color: rgba(236, 72, 153, 0.2); }
-        #page-6 { border-color: rgba(59, 130, 246, 0.2); }
-        #page-7 { border-color: rgba(168, 85, 247, 0.2); }
-        #page-8 { border-color: rgba(251, 191, 36, 0.3); }
-
         h1 {
-            font-size: 2.8rem;
-            font-weight: 900;
-            margin-bottom: 12px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
             position: relative;
             z-index: 2;
-            letter-spacing: -0.5px;
             line-height: 1.2;
         }
 
         #page-1 h1 { 
-            background: linear-gradient(135deg, #ff2a6d, #ff6b9d, #f472b6); 
+            background: linear-gradient(135deg, #ff2a6d, #ff6b9d); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(255, 42, 109, 0.2);
         }
         #page-2 h1 { 
-            background: linear-gradient(135deg, #f59e0b, #fbbf24, #fcd34d); 
+            background: linear-gradient(135deg, #f59e0b, #fbbf24); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(245, 158, 11, 0.2);
         }
         #page-3 h1 { 
-            background: linear-gradient(135deg, #8b5cf6, #a78bfa, #c4b5fd); 
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(139, 92, 246, 0.2);
         }
         #page-4 h1 { 
-            background: linear-gradient(135deg, #10b981, #34d399, #6ee7b7); 
+            background: linear-gradient(135deg, #10b981, #34d399); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(16, 185, 129, 0.2);
         }
         #page-5 h1 { 
-            background: linear-gradient(135deg, #ec4899, #f472b6, #f9a8d4); 
+            background: linear-gradient(135deg, #ec4899, #f472b6); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(236, 72, 153, 0.2);
         }
         #page-6 h1 { 
-            background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd); 
+            background: linear-gradient(135deg, #3b82f6, #60a5fa); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(59, 130, 246, 0.2);
         }
         #page-7 h1 { 
-            background: linear-gradient(135deg, #a855f7, #c084fc, #d8b4fe); 
+            background: linear-gradient(135deg, #a855f7, #c084fc); 
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 60px rgba(168, 85, 247, 0.2);
         }
         .final-page h1 {
-            font-size: 3.2rem;
-            background: linear-gradient(135deg, #ff1f6a, #f59e0b, #ffd700, #ec4899, #8b5cf6);
-            background-size: 300% 300%;
+            font-size: 2.6rem;
+            background: linear-gradient(135deg, #ff1f6a, #f59e0b, #ffd700);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: rainbowShift 4s ease infinite, popPulse 1.8s infinite alternate;
-            text-shadow: 0 0 80px rgba(255, 200, 0, 0.15);
+            animation: rainbowShift 4s ease infinite;
         }
 
         @keyframes rainbowShift {
@@ -258,96 +214,84 @@
             100% { background-position: 0% 50%; }
         }
 
-        @keyframes popPulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
-        }
-
         .page p {
-            font-size: 1.3rem;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 500;
-            max-width: 88%;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 12px 28px;
-            border-radius: 60px;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 90%;
+            margin-bottom: 22px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
             z-index: 2;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .btn {
-            padding: 16px 48px;
-            background: linear-gradient(135deg, rgba(255, 42, 109, 0.9), rgba(124, 58, 237, 0.9));
+            padding: 14px 36px;
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.85), rgba(124, 58, 237, 0.85));
             color: white;
             border: none;
-            border-radius: 60px;
-            font-size: 1.2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 12px 40px rgba(255, 42, 109, 0.3), 0 0 60px rgba(124, 58, 237, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(255, 42, 109, 0.25);
             letter-spacing: 0.3px;
             display: inline-flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
             position: relative;
             z-index: 2;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn i {
-            transition: all 0.4s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-6px) scale(1.04);
-            box-shadow: 0 20px 60px rgba(255, 42, 109, 0.4), 0 0 80px rgba(124, 58, 237, 0.15);
-            background: linear-gradient(135deg, rgba(255, 42, 109, 1), rgba(124, 58, 237, 1));
-        }
-
-        .btn:hover i {
-            transform: translateX(10px) scale(1.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn:active {
             transform: scale(0.94);
+            box-shadow: 0 4px 15px rgba(255, 42, 109, 0.3);
+        }
+
+        .btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn:active i {
+            transform: translateX(6px);
         }
 
         .final-page {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(24px) saturate(250%);
-            border: 1.5px solid rgba(255, 200, 100, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px) saturate(200%);
+            -webkit-backdrop-filter: blur(16px) saturate(200%);
         }
 
         .final-page p {
-            background: rgba(255, 215, 215, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 1.4rem;
+            background: rgba(255, 215, 215, 0.03);
+            font-size: 1.2rem;
         }
 
+        /* Simplified floating particles - fewer */
         .particle-float {
             position: absolute;
-            font-size: 2rem;
-            opacity: 0.08;
+            font-size: 1.5rem;
+            opacity: 0.05;
             animation: particleDrift 12s infinite alternate ease-in-out;
             pointer-events: none;
             z-index: 0;
         }
-        .particle-float:nth-child(1) { top: 8%; left: 8%; animation-duration: 14s; }
-        .particle-float:nth-child(2) { bottom: 10%; right: 8%; animation-duration: 16s; }
-        .particle-float:nth-child(3) { top: 50%; left: 90%; animation-duration: 12s; font-size: 2.8rem; }
-        .particle-float:nth-child(4) { top: 30%; right: 92%; animation-duration: 18s; }
+        .particle-float:nth-child(1) { top: 10%; left: 10%; animation-duration: 15s; }
+        .particle-float:nth-child(2) { bottom: 15%; right: 10%; animation-duration: 18s; }
+        .particle-float:nth-child(3) { top: 45%; left: 85%; animation-duration: 13s; font-size: 2rem; }
 
         @keyframes particleDrift {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0.05; }
-            100% { transform: translate(30px, -30px) rotate(30deg) scale(1.3); opacity: 0.15; }
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.03; }
+            100% { transform: translate(20px, -20px) rotate(20deg); opacity: 0.08; }
         }
 
         #confetti-canvas {
@@ -365,42 +309,45 @@
             display: block;
         }
 
-        @media (max-width: 600px) {
-            .container { height: 580px; }
-            h1 { font-size: 2rem; }
-            .page p { font-size: 1.05rem; padding: 10px 16px; }
-            .btn { font-size: 1rem; padding: 14px 30px; gap: 10px; }
-            .final-page h1 { font-size: 2.2rem; }
-            .page { padding: 28px 20px; }
-            .music-control { bottom: 20px; right: 20px; padding: 10px 18px; }
-            .music-control .status { font-size: 0.8rem; }
+        @media (max-width: 550px) {
+            .container { height: 520px; }
+            h1 { font-size: 1.7rem; }
+            .page p { font-size: 0.95rem; padding: 8px 14px; margin-bottom: 18px; }
+            .btn { font-size: 0.95rem; padding: 12px 26px; gap: 8px; }
+            .final-page h1 { font-size: 2rem; }
+            .page { padding: 20px 16px; border-radius: 30px; }
+            .music-control { bottom: 15px; right: 15px; padding: 8px 14px; }
+            .music-control i { font-size: 1rem; }
+            .music-control .status { font-size: 0.7rem; }
+        }
+
+        @media (max-width: 380px) {
+            .container { height: 480px; }
+            h1 { font-size: 1.4rem; }
+            .page p { font-size: 0.85rem; padding: 6px 12px; }
+            .btn { font-size: 0.85rem; padding: 10px 20px; }
+            .final-page h1 { font-size: 1.6rem; }
         }
     </style>
 </head>
 <body>
-    <!-- background glows -->
+    <!-- Simple static background -->
     <div class="bg-glow bg1"></div>
     <div class="bg-glow bg2"></div>
     <div class="bg-glow bg3"></div>
-    <div class="bg-glow bg4"></div>
 
-    <!-- floating stars -->
     <div class="stars">
-        <div class="star">✦</div>
-        <div class="star">✦</div>
         <div class="star">✦</div>
         <div class="star">✦</div>
         <div class="star">✦</div>
         <div class="star">✦</div>
     </div>
 
-    <!-- Background Music - MP3 Autoplay -->
-    <audio id="bg-audio" loop autoplay>
+    <!-- Audio - optimized for mobile -->
+    <audio id="bg-audio" loop preload="metadata">
         <source src="https://l.top4top.io/m_3898100kl1.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
-    <!-- Music Control Button -->
     <div class="music-control" id="musicControl" onclick="toggleMusic()">
         <i class="fas fa-music" id="musicIcon"></i>
         <span class="status" id="musicStatus">Playing</span>
@@ -411,7 +358,6 @@
     <div class="container">
         <div class="page active" id="page-1">
             <div class="particle-float">✨</div>
-            <div class="particle-float">💫</div>
             <h1>Hey Angel... ✨</h1>
             <p>Ajke ekta onek special din. Jano ki ajke ki?</p>
             <button class="btn" onclick="nextPage(1, 2)">Click Here <i class="fas fa-arrow-right"></i></button>
@@ -419,7 +365,6 @@
 
         <div class="page" id="page-2">
             <div class="particle-float">🎂</div>
-            <div class="particle-float">🌟</div>
             <h1>Hmm, thik dhorechis! 🎂</h1>
             <p>Ajke tor birthday! Amar chotto ar pagli bon tar jonmodin aj.</p>
             <button class="btn" onclick="nextPage(2, 3)">Next <i class="fas fa-arrow-right"></i></button>
@@ -427,7 +372,6 @@
 
         <div class="page" id="page-3">
             <div class="particle-float">🤫</div>
-            <div class="particle-float">💜</div>
             <h1>Tobe Ekta Kotha... 🤫</h1>
             <p>Tui jotoi boro hosh na keno, amar kache tui obossoi choto bon-i thakbi sarakkhon.</p>
             <button class="btn" onclick="nextPage(3, 4)">Next <i class="fas fa-arrow-right"></i></button>
@@ -435,7 +379,6 @@
 
         <div class="page" id="page-4">
             <div class="particle-float">🤲</div>
-            <div class="particle-float">🌙</div>
             <h1>Amar Doya... 🤲</h1>
             <p>Allah tor jiboner sob bhalo iccha gulo puron koruk. Tui jeno sobshomoy emon hashi-khushi thakis.</p>
             <button class="btn" onclick="nextPage(4, 5)">Next <i class="fas fa-arrow-right"></i></button>
@@ -443,7 +386,6 @@
 
         <div class="page" id="page-5">
             <div class="particle-float">❤️</div>
-            <div class="particle-float">💝</div>
             <h1>Always With You ❤️</h1>
             <p>Jibone jotoi problem asuk, tor ei vaiya tor pash e chilo, ache ar thakbe.</p>
             <button class="btn" onclick="nextPage(5, 6)">Next <i class="fas fa-arrow-right"></i></button>
@@ -451,7 +393,6 @@
 
         <div class="page" id="page-6">
             <div class="particle-float">🙈</div>
-            <div class="particle-float">🎊</div>
             <h1>Ready? 🙈</h1>
             <p>Ebar final surprise er pala...</p>
             <button class="btn" onclick="nextPage(6, 7)">Let's Go <i class="fas fa-rocket"></i></button>
@@ -459,7 +400,6 @@
 
         <div class="page" id="page-7">
             <div class="particle-float">⏳</div>
-            <div class="particle-float">⭐</div>
             <h1>Countdown... ⏳</h1>
             <p>3... 2... 1...</p>
             <button class="btn" onclick="nextPage(7, 8)">Boom! <i class="fas fa-star"></i></button>
@@ -467,7 +407,6 @@
 
         <div class="page final-page" id="page-8">
             <div class="particle-float">🎉</div>
-            <div class="particle-float">🎁</div>
             <h1>🎉 HAPPY BIRTHDAY ANGEL! 🎉</h1>
             <p>Onek onek bhalobasha ar ador tor jonno! Have a blast today! 🎂🎁💖</p>
             <button class="btn" onclick="location.reload()"><i class="fas fa-redo-alt"></i> Replay</button>
@@ -475,20 +414,31 @@
     </div>
 
     <script>
+        // ===== AUDIO =====
         const audio = document.getElementById('bg-audio');
         let musicPlaying = true;
+        let audioStarted = false;
 
-        // Try to autoplay - some browsers need user interaction
         function initAudio() {
-            audio.play().catch(() => {
-                // If autoplay fails, wait for user click
-                document.addEventListener('click', function playOnClick() {
-                    audio.play();
-                    document.removeEventListener('click', playOnClick);
-                }, { once: true });
+            if (audioStarted) return;
+            audio.play().then(() => {
+                audioStarted = true;
+            }).catch(() => {
+                // Auto-play blocked - wait for user interaction
+                const startAudio = () => {
+                    audio.play().then(() => {
+                        audioStarted = true;
+                    }).catch(() => {});
+                    document.removeEventListener('click', startAudio);
+                    document.removeEventListener('touchstart', startAudio);
+                };
+                document.addEventListener('click', startAudio);
+                document.addEventListener('touchstart', startAudio);
             });
         }
-        initAudio();
+
+        // Try to start audio on load
+        setTimeout(initAudio, 500);
 
         function toggleMusic() {
             const icon = document.getElementById('musicIcon');
@@ -500,13 +450,14 @@
                 status.textContent = 'Paused';
                 musicPlaying = false;
             } else {
-                audio.play();
+                audio.play().catch(() => {});
                 icon.className = 'fas fa-music';
                 status.textContent = 'Playing';
                 musicPlaying = true;
             }
         }
 
+        // ===== PAGE TRANSITION =====
         function nextPage(current, next) {
             const currentPage = document.getElementById('page-' + current);
             const nextPage = document.getElementById('page-' + next);
@@ -519,17 +470,23 @@
             if (next === 8) {
                 setTimeout(() => {
                     launchConfettiBurst();
-                }, 600);
+                }, 500);
             }
         }
 
-        // ===== PREMIUM CONFETTI =====
+        // ===== OPTIMIZED CONFETTI for mobile =====
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
         let confettiActive = false;
         let animationFrame = null;
+        let isLowEnd = false;
+
+        // Detect low-end devices
+        if (window.navigator.hardwareConcurrency && window.navigator.hardwareConcurrency < 4) {
+            isLowEnd = true;
+        }
 
         function resizeCanvas() {
             width = window.innerWidth;
@@ -546,31 +503,30 @@
             }
             reset() {
                 this.x = Math.random() * width;
-                this.y = Math.random() * height - height * 0.2;
-                this.size = Math.random() * 14 + 6;
-                this.speedY = Math.random() * 8 + 5;
-                this.speedX = (Math.random() - 0.5) * 6;
+                this.y = Math.random() * height - height * 0.1;
+                this.size = isLowEnd ? Math.random() * 8 + 4 : Math.random() * 12 + 5;
+                this.speedY = isLowEnd ? Math.random() * 5 + 3 : Math.random() * 7 + 4;
+                this.speedX = (Math.random() - 0.5) * (isLowEnd ? 3 : 5);
                 this.rotation = Math.random() * 360;
-                this.rotateSpeed = (Math.random() - 0.5) * 12;
-                this.color = `hsl(${Math.random() * 360}, 95%, 65%)`;
-                this.opacity = 0.8 + Math.random() * 0.3;
-                this.shape = Math.random() > 0.4 ? 'rect' : 'circle';
-                this.wobble = Math.random() * 15;
-                this.wobbleSpeed = Math.random() * 0.15 + 0.02;
+                this.rotateSpeed = (Math.random() - 0.5) * (isLowEnd ? 6 : 10);
+                this.color = `hsl(${Math.random() * 360}, 90%, 60%)`;
+                this.opacity = 0.7 + Math.random() * 0.3;
+                this.shape = Math.random() > 0.5 ? 'rect' : 'circle';
+                this.wobble = Math.random() * 10;
+                this.wobbleSpeed = Math.random() * 0.08 + 0.02;
                 this.wobbleOffset = Math.random() * 100;
-                this.glow = Math.random() * 20 + 10;
             }
             update() {
-                this.y += this.speedY * 0.85;
-                this.x += this.speedX + Math.sin(this.wobbleOffset + this.wobble) * 0.6;
+                this.y += this.speedY * 0.7;
+                this.x += this.speedX + Math.sin(this.wobbleOffset + this.wobble) * 0.4;
                 this.rotation += this.rotateSpeed;
                 this.wobble += this.wobbleSpeed;
-                if (this.y > height + 50) {
+                if (this.y > height + 40) {
                     this.reset();
-                    this.y = -20;
+                    this.y = -10;
                 }
-                if (this.x > width + 50) this.x = -30;
-                if (this.x < -50) this.x = width + 30;
+                if (this.x > width + 40) this.x = -20;
+                if (this.x < -40) this.x = width + 20;
             }
             draw() {
                 ctx.save();
@@ -579,7 +535,7 @@
                 ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = this.glow;
+                ctx.shadowBlur = isLowEnd ? 6 : 12;
 
                 if (this.shape === 'rect') {
                     const w = this.size;
@@ -594,7 +550,7 @@
             }
         }
 
-        function initConfetti(count = 250) {
+        function initConfetti(count = isLowEnd ? 120 : 200) {
             particles = [];
             for (let i = 0; i < count; i++) {
                 particles.push(new Particle());
@@ -613,15 +569,29 @@
 
         function launchConfettiBurst() {
             if (confettiActive) {
-                for (let i = 0; i < 120; i++) {
+                const addCount = isLowEnd ? 40 : 80;
+                for (let i = 0; i < addCount; i++) {
                     particles.push(new Particle());
                 }
                 return;
             }
             confettiActive = true;
             document.body.classList.add('confetti-active');
-            initConfetti(250);
+            initConfetti(isLowEnd ? 130 : 220);
             animateConfetti();
+            
+            // Auto stop after 8 seconds to save battery
+            setTimeout(() => {
+                if (confettiActive) {
+                    confettiActive = false;
+                    document.body.classList.remove('confetti-active');
+                    if (animationFrame) {
+                        cancelAnimationFrame(animationFrame);
+                        animationFrame = null;
+                    }
+                    ctx.clearRect(0, 0, width, height);
+                }
+            }, 8000);
         }
     </script>
 </body>
